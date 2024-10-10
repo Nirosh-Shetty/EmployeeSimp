@@ -62,7 +62,7 @@ router.post("/v1/signup", async (req, res) => {
 
 router.post("/v1/login", async (req, res) => {
   try {
-    await adminValidationSchema.validate(req.body, { abortEarly: false });
+    // await adminValidationSchema.validate(req.body, { abortEarly: false });
     const { username, password } = req.body;
     const admin = await Admin.findOne({ username, password });
     if (admin) {
