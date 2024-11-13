@@ -18,9 +18,10 @@ const SignUp = () => {
   });
   return (
     <div className="bg-gray-100 px-4">
-      <p>Signup Page</p>
+      {/* <p>Signup Page</p> */}
       <div className="flex items-center justify-center min-h-[89vh] ">
         <div className="w-full max-w-md bg-white shadow-md rounded-lg p-8">
+          <h1 className="font-bold m-3 text-3xl text-center">Register</h1>
           <Formik
             initialValues={{
               username: "",

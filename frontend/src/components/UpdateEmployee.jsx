@@ -1,10 +1,10 @@
-import { useFormik } from 'formik';
-import Navbar from './Navbar';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { BASE_URL_API, BACKEND_URL_API } from '../../global';
-import { employeeValidationSchema } from '../../../backend/validation';
+import { useFormik } from "formik";
+import Navbar from "./Navbar";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { BASE_URL_API, BACKEND_URL_API } from "../../global";
+import { employeeValidationSchema } from "../../../backend/validation";
 
 const BASE_URL = BASE_URL_API;
 const BACKEND_URL = BACKEND_URL_API;
@@ -13,33 +13,32 @@ const UpdateEmployee = () => {
   const navigate = useNavigate();
   const [admin, setAdmin] = useState(null);
   const [employee, setEmployee] = useState(null);
-  const [courses, setCourses] = useState([])
+  const [courses, setCourses] = useState(["MCA", "BCA", "BSC"]);
   const { id } = useParams();
 
+  // useEffect(() => {
+  //   const fetchCourses = async () => {
+  //     try {
+  //       const response = await axios.get(`${BASE_URL}/courses`);
+  //       setCourses(response.data[0].courses);
+  //     } catch (error) {
+  //       console.error("Error fetching courses:", error);
+  //     }
+  //   };
+  //   fetchCourses();
+  // }, []);
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/courses`);
-        setCourses(response.data[0].courses);
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-      }
-    };
-    fetchCourses();
-  }, []);
-  useEffect(() => {
-    
     const fetchAdmin = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/me`, {
           headers: {
             "Content-type": "application/json",
             Authorization: "Bearer " + localStorage.getItem("token"),
-          }
+          },
         });
         setAdmin(response.data);
       } catch (error) {
-        console.error('Error fetching admin:', error);
+        console.error("Error fetching admin:", error);
       }
     };
     fetchAdmin();
@@ -51,22 +50,22 @@ const UpdateEmployee = () => {
         const response = await axios.get(`${BASE_URL}/employee/${id}`, {
           headers: {
             "Content-type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token"),
-          }
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
         });
 
         let coursesArray;
         if (Array.isArray(response.data.courses)) {
           coursesArray = response.data.courses;
-        } else if (typeof response.data.courses === 'string') {
-          coursesArray = response.data.courses.split(',');
+        } else if (typeof response.data.courses === "string") {
+          coursesArray = response.data.courses.split(",");
         } else {
           coursesArray = [];
         }
 
         setEmployee({ ...response.data, courses: coursesArray });
       } catch (error) {
-        console.error('Error fetching employee:', error);
+        console.error("Error fetching employee:", error);
       }
     };
     fetchEmployee();
@@ -86,11 +85,11 @@ const UpdateEmployee = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: employee?.name || '',
-      email: employee?.email || '',
-      mobile: employee?.mobile || '',
-      designation: employee?.designation || '',
-      gender: employee?.gender || '',
+      name: employee?.name || "",
+      email: employee?.email || "",
+      mobile: employee?.mobile || "",
+      designation: employee?.designation || "",
+      gender: employee?.gender || "",
       courses: employee?.courses || [],
       image: employee?.imageUrl || null,
     },
@@ -98,37 +97,37 @@ const UpdateEmployee = () => {
     onSubmit: (values) => {
       const formData = new FormData();
       if (values.image instanceof File) {
-        formData.append('image', values.image);
+        formData.append("image", values.image);
       } else {
-        formData.append('oldImage', employee.imageUrl);
+        formData.append("oldImage", employee.imageUrl);
       }
 
-      formData.append('name', values.name);
-      formData.append('email', values.email);
-      formData.append('mobile', values.mobile);
-      formData.append('designation', values.designation);
-      formData.append('gender', values.gender);
+      formData.append("name", values.name);
+      formData.append("email", values.email);
+      formData.append("mobile", values.mobile);
+      formData.append("designation", values.designation);
+      formData.append("gender", values.gender);
 
       values.courses.forEach((course, index) => {
         formData.append(`courses[${index}]`, course);
       });
-      console.log("formdata",formData.getAll('courses'))
-      axios.put(`${BASE_URL}/employee/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          "Authorization": "Bearer " + localStorage.getItem("token"),
-        },
-      })
-      .then((response) => {
-        console.log("Update successful:", response);
-        navigate('/employes');
-      })
-      .catch((error) => {
-        console.error("Error during update:", error);
-      });
-    }
+      console.log("formdata", formData.getAll("courses"));
+      axios
+        .put(`${BASE_URL}/employee/${id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          console.log("Update successful:", response);
+          navigate("/employes");
+        })
+        .catch((error) => {
+          console.error("Error during update:", error);
+        });
+    },
   });
-
 
   return (
     <>
@@ -137,7 +136,9 @@ const UpdateEmployee = () => {
         <form onSubmit={formik.handleSubmit} className="p-6">
           {/* Name */}
           <div className="mt-4 flex items-center">
-            <label htmlFor="name" className="w-32">Name:</label>
+            <label htmlFor="name" className="w-32">
+              Name:
+            </label>
             <input
               id="name"
               name="name"
@@ -153,7 +154,9 @@ const UpdateEmployee = () => {
 
           {/* Email */}
           <div className="mt-4 flex items-center">
-            <label htmlFor="email" className="w-32">Email:</label>
+            <label htmlFor="email" className="w-32">
+              Email:
+            </label>
             <input
               id="email"
               name="email"
@@ -169,7 +172,9 @@ const UpdateEmployee = () => {
 
           {/* Mobile */}
           <div className="mt-4 flex items-center">
-            <label htmlFor="mobile" className="w-32">Mobile No:</label>
+            <label htmlFor="mobile" className="w-32">
+              Mobile No:
+            </label>
             <input
               id="mobile"
               name="mobile"
@@ -185,7 +190,9 @@ const UpdateEmployee = () => {
 
           {/* Designation */}
           <div className="mt-4 flex items-center">
-            <label htmlFor="designation" className="w-32">Designation:</label>
+            <label htmlFor="designation" className="w-32">
+              Designation:
+            </label>
             <select
               id="designation"
               name="designation"
@@ -213,7 +220,7 @@ const UpdateEmployee = () => {
                   name="gender"
                   value="M"
                   onChange={formik.handleChange}
-                  checked={formik.values.gender === 'M'}
+                  checked={formik.values.gender === "M"}
                 />
                 M
               </label>
@@ -223,7 +230,7 @@ const UpdateEmployee = () => {
                   name="gender"
                   value="F"
                   onChange={formik.handleChange}
-                  checked={formik.values.gender === 'F'}
+                  checked={formik.values.gender === "F"}
                 />
                 F
               </label>
@@ -237,36 +244,38 @@ const UpdateEmployee = () => {
           <div className="mt-4 flex items-center">
             <label className="w-32">Courses:</label>
             {courses.map((course) => (
-                <label key={course}>
-                  <input
-                    type="checkbox"
-                    name="courses"
-                    value={course}
-                    onChange={handleCheckboxChange}
-                    checked={formik.values.courses.includes(course)}
-                  />
-                  {course}
-                </label>
-              ))}
-            </div>
-            {formik.touched.courses && formik.errors.courses && (
-              <div className="text-red-500">{formik.errors.courses}</div>
-            )}
+              <label key={course}>
+                <input
+                  type="checkbox"
+                  name="courses"
+                  value={course}
+                  onChange={handleCheckboxChange}
+                  checked={formik.values.courses.includes(course)}
+                />
+                {course}
+              </label>
+            ))}
+          </div>
+          {formik.touched.courses && formik.errors.courses && (
+            <div className="text-red-500">{formik.errors.courses}</div>
+          )}
           {/* Display Existing Image */}
           <div className="mt-4 flex items-center">
             <label className="w-32">Current Image:</label>
             {formik.values.image && (
               <img
-                src={`${BACKEND_URL}${formik.values.image}`} 
+                src={`${BACKEND_URL}${formik.values.image}`}
                 className="border max-w-xs flex-1"
-                style={{ maxWidth: '100px', maxHeight: '100px' }} 
+                style={{ maxWidth: "100px", maxHeight: "100px" }}
               />
             )}
           </div>
 
           {/* Image Upload */}
           <div className="mt-4 flex items-center">
-            <label htmlFor="image" className="w-32">Image Upload:</label>
+            <label htmlFor="image" className="w-32">
+              Image Upload:
+            </label>
             <input
               id="image"
               name="image"
@@ -275,7 +284,7 @@ const UpdateEmployee = () => {
               onChange={(event) => {
                 formik.setFieldValue("image", event.currentTarget.files[0]);
               }}
-              onBlur={formik.handleBlur}  // Added onBlur
+              onBlur={formik.handleBlur} // Added onBlur
               className="border p-2 max-w-xs flex-1"
             />
             {formik.touched.image && formik.errors.image && (
